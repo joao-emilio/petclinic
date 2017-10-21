@@ -4,10 +4,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.samples</groupId>
-  <artifactId>spring-petclinic</artifactId>
-  <version>1.5.1</version>
+  <artifactId>petclinic</artifactId>
+    <packaging>war</packaging>
+    <version>1.5.1</version>
 
-  <parent>
+    <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>1.5.4.RELEASE</version>
@@ -15,6 +16,7 @@
   <name>petclinic</name>
 
   <properties>
+      <docker.image.prefix>wso2apiforum</docker.image.prefix>
 
     <!-- Generic properties -->
     <java.version>1.8</java.version>
@@ -115,16 +117,35 @@
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 
   <build>
+      <finalName>petclinic</finalName>
     <plugins>
-      <plugin>
+        <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
-          <execution>
-            <!-- Spring Boot Actuator displays build-related information 
+        <execution>
+            <goals>
+                <goal>repackage</goal>
+            </goals>
+        </execution>
+        </executions>
+        </plugin>
+
+        <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+            <execution>
+            <!-- Spring Boot Actuator displays build-related information
               if a META-INF/build-info.properties file is present -->
             <goals>
               <goal>build-info</goal>
@@ -157,7 +178,7 @@
         </executions>
       </plugin>
 
-      <!-- Spring Boot Actuator displays build-related information if a git.properties 
+      <!-- Spring Boot Actuator displays build-related information if a git.properties
         file is present at the classpath -->
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -206,6 +227,15 @@
           </dependency>
         </dependencies>
       </plugin>
+        <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>dockerfile-maven-plugin</artifactId>
+            <version>1.3.4</version>
+            <configuration>
+                <repository>${docker.image.prefix}/${project.artifactId}</repository>
+            </configuration>
+        </plugin>
+
     </plugins>
   </build>
   <reporting>

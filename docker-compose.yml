@@ -1,9 +1,24 @@
-mysql:
-  image: mysql
-  ports:
-    - "3306:3306"
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_DATABASE=test
-  volumes:
-    - "./conf.d:/etc/mysql/conf.d:ro"
+services:
+  mysql-petclinic:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=D1ficult
+      - MYSQL_DATABASE=petclinic
+      - MYSQL_USER=petclinic
+      - MYSQL_PASSWORD=passw0rd
+    volumes:
+      - "./conf.d:/etc/mysql/conf.d:ro"
+  java-petclinic:
+     image: wso2apiforum/spring-petclinic
+     depends_on:
+       - mysql-petclinic
+     ports:
+       - "8080:8080"
+     environment:
+       - DATABASE_HOST=mysql-petclinic
+       - DATABASE_USER=petclinic
+       - DATABASE_PASSWORD=passw0rd
+       - DATABASE_NAME=petclinic
+       - DATABASE_PORT=3306
